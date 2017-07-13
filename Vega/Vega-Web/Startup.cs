@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Vega_Web.Persistence;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
 
 namespace Vega_Web
 {
@@ -22,6 +18,12 @@ namespace Vega_Web
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
+                if(env.IsDevelopment())
+                {
+                    builder.AddUserSecrets();
+                }
+
             Configuration = builder.Build();
         }
 
@@ -30,9 +32,8 @@ namespace Vega_Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-             services.AddDbContext<VegaDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
-             services.AddAutoMapper();
+            services.AddDbContext<VegaDbContext>(options => options.UseSqlServer(Configuration["DBConnectionString"]));
+            services.AddAutoMapper();
             // Add framework services.
             services.AddMvc();
         }
@@ -47,6 +48,7 @@ namespace Vega_Web
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
+
             }
             else
             {
