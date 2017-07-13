@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Vega_Web.Persistence;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+
 namespace Vega_Web
 {
     public class Startup
@@ -30,6 +32,7 @@ namespace Vega_Web
         {
 
              services.AddDbContext<VegaDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+             services.AddAutoMapper();
             // Add framework services.
             services.AddMvc();
         }
